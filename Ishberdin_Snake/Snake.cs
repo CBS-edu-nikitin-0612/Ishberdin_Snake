@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ishberdin_Snake
 {
@@ -52,6 +49,7 @@ namespace Ishberdin_Snake
                     break;
             }
         }
+        
     }
     class Head : ElementSnake
     {
@@ -69,6 +67,11 @@ namespace Ishberdin_Snake
         {
             tail.Add(new ElementSnake(X, Y, "#"[0]));
         }
+        public void AddElement()
+        {
+            AddElement(tail[tail.Count-1].X, tail[tail.Count-1].Y);
+        }
+
     }
 
     class ElementSnake

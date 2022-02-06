@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace Ishberdin_Snake
@@ -12,6 +8,8 @@ namespace Ishberdin_Snake
         private static Timer timer;
         private static Display display;
         private static Snake snake;
+        private static Food food;
+
         private static ConsoleKeyInfo key;
         private static Status status;
 
@@ -19,6 +17,8 @@ namespace Ishberdin_Snake
         {
             display = new Display(22, 22);
             snake = new Snake();
+            food = new Food();
+            food.Create(display);
             timer = new Timer(1000);
             timer.Elapsed += OnTimedEvent;
             timer.AutoReset = true;
@@ -42,7 +42,7 @@ namespace Ishberdin_Snake
                         snake.direction = Direction.right;
                         break;
                     case (char)27:
-                        status = Status.over;
+                        status = Status.stop;
                         break;
                     default:
                         break;
@@ -51,18 +51,19 @@ namespace Ishberdin_Snake
         }
         public static void CheckCollision()
         {
-            if ((snake.head.X == 0) | (snake.head.Y == 0) | snake.head.X == (display.Widths - 1) | snake.head.Y == display.High - 1) status = Status.over;
+            if ((snake.head.X == 0) | (snake.head.Y == 0) | snake.head.X == (display.Widths - 1) | snake.head.Y == display.High - 1) status = Status.stop;
             foreach (ElementSnake element in snake.body.tail)
             {
-                if (element.X == snake.head.X & element.Y == snake.head.Y) status = Status.over;
+                if (element.X == snake.head.X & element.Y == snake.head.Y) status = Status.stop;
             }
+            if ((snake.head.X == food.X) & (snake.head.Y == food.Y)) status = Status.eat;
         }
         private static void OnTimedEvent(object obj, ElapsedEventArgs e)
         {
             CheckCollision();
             CheckStatus();
-            display.Refresh(snake);
             snake.Move();
+            display.Refresh(snake, food);
         }
         public static void CheckStatus()
         {
@@ -71,10 +72,11 @@ namespace Ishberdin_Snake
                 case Status.play:
                     break;
                 case Status.eat:
+                    food.Create(display);
+                    snake.body.AddElement();
+                    status = Status.play;
                     break;
                 case Status.stop:
-                    break;
-                case Status.over:
                     timer.Enabled = false;
                     Console.WriteLine("GAME OVER!GAME OVER!GAME OVER!GAME OVER!GAME OVER!GAME OVER!GAME OVER!GAME OVER!GAME OVER!GAME OVER!GAME OVER!GAME OVER!GAME OVER!GAME OVER!GAME OVER!");
                     break;

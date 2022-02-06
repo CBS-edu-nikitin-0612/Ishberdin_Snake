@@ -18,10 +18,11 @@ namespace Ishberdin_Snake
             field = new char[widths, high];
             CalculateArea();
         }
-        public void Refresh(Snake snake)
+        public void Refresh(Snake snake, Food food)
         {
             field = new char[Widths, High];
             CalculateArea();
+            CalculateElementSnake(food);
             CalculateSnake(snake);
             string s = "";
             for (int y = 0; y < High; y++)
