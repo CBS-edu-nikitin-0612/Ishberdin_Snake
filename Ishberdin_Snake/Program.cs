@@ -19,7 +19,7 @@ namespace Ishberdin_Snake
             snake = new Snake();
             food = new Food();
             food.Create(display);
-            timer = new Timer(1000);
+            timer = new Timer(400);
             timer.Elapsed += OnTimedEvent;
             timer.AutoReset = true;
             timer.Enabled = true;
