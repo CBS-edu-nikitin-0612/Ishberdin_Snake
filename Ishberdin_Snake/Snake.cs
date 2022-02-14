@@ -5,6 +5,7 @@ namespace Ishberdin_Snake
 {
     class Snake
     {
+        // Лучше избегать открытых полей. Для этого придумали свойства. 
         public Direction direction;
         public Head head;
         public Body body;
@@ -60,9 +61,12 @@ namespace Ishberdin_Snake
             _char = "@"[0];
         }
     }
+    // Немного не понятна ваша логика наследования. Голова - это элемент змейки,
+    // а тело (Body) это не елемент змейки, а тип в котором содержаться элементы змейки...
     class Body
     {
         public List<ElementSnake> tail = new List<ElementSnake>();
+
         public void AddElement(int X, int Y)
         {
             tail.Add(new ElementSnake(X, Y, "#"[0]));
@@ -76,6 +80,7 @@ namespace Ishberdin_Snake
 
     class ElementSnake
     {
+        // Можно было взять структуру Point которая бы содержала две координаты. System.Drawing.Point
         public int X, Y;
         public char _char;
         public ElementSnake(int X, int Y, char _char)
