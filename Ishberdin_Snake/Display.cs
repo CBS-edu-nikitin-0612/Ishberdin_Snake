@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ishberdin_Snake
 {
+    // Я бы настройки окна вынес в отдельный класс DisplaySettings
+    // А уже в самом классе Display управлял бы логикой работы Refresh() и т.д.
     class Display
     {
         public int High { get; }

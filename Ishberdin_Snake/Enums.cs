@@ -6,6 +6,7 @@
         eat,
         stop
     }
+    // ConsoleKey enum
     enum Direction
     {
         up,
