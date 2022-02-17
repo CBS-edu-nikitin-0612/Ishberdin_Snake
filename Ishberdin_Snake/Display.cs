@@ -1,63 +1,79 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ishberdin_Snake
 {
     class Display
     {
-        public int High { get; }
-        public int Widths { get; }
         char[,] field;
+        DisplaySettings _settings;
+        public DisplaySettings Settings { get { return _settings; } }
         public Display(int high, int widths)
         {
-            High = high;
-            Widths = widths;
-            field = new char[widths, high];
+            _settings = new DisplaySettings(high, widths);
+            field = new char[_settings.High, _settings.Widths];
             CalculateArea();
         }
         public void Refresh(Snake snake, Food food)
         {
-            field = new char[Widths, High];
+            field = new char[_settings.High, _settings.Widths];
             CalculateArea();
-            CalculateElementSnake(food);
+            CalculateElementGame(food);
             CalculateSnake(snake);
-            string s = "";
-            for (int y = 0; y < High; y++)
+            for (int y = 0; y < _settings.High; y++)
             {
-                for (int x = 0; x < Widths; x++)
+                for (int x = 0; x < _settings.Widths; x++)
                 {
-                    s += field[x, y];
+                    Console.SetCursorPosition(x, y);
+                    if (field[x, y] == '*')
+                    {
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.Write(" ");
+                    }
+                    else Console.Write(field[x, y]);
+                    Console.BackgroundColor = ConsoleColor.Black;
                 }
-                s += "\r\n";
             }
 
-            Console.Clear();
-            Console.WriteLine(s);
         }
-        void CalculateArea()
+        public void Refresh(ElementGame element)
         {
-            for (int x = 0; x < Widths; x++)
+            CalculateElementGame(element);
+            Console.SetCursorPosition(element.X, element.Y);
+            Console.Write(element.Char);
+            Console.SetCursorPosition(0, Settings.High);
+        }
+
+        private void CalculateArea()
+        {
+            for (int x = 0; x < _settings.Widths; x++)
             {
-                for (int y = 0; y < High; y++)
+                for (int y = 0; y < _settings.High; y++)
                 {
-                    if ((x == 0) | (y == 0) | x == (Widths - 1) | y == High - 1) field[x, y] = "*"[0];
+                    if ((x == 0) | (y == 0) | x == (_settings.Widths - 1) | y == _settings.High - 1) field[x, y] = "*"[0];
                 }
             }
         }
         public void CalculateSnake(Snake snake)
         {
-            CalculateElementSnake(snake.head);
-            foreach (ElementSnake element in snake.body.tail)
+            CalculateElementGame(snake.head);
+            foreach (ElementGame element in snake.body.tail)
             {
-                CalculateElementSnake(element);
+                CalculateElementGame(element);
             }
         }
-        void CalculateElementSnake(ElementSnake element)
+        private void CalculateElementGame(ElementGame element)
         {
-            field[element.X, element.Y] = element._char;
+            field[element.X, element.Y] = element.Char;
+        }
+    }
+    class DisplaySettings
+    {
+        public int High { get; }
+        public int Widths { get; }
+        public DisplaySettings(int high, int widths)
+        {
+            High = high;
+            Widths = widths;
         }
     }
 }

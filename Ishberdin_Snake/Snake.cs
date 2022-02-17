@@ -8,33 +8,31 @@ namespace Ishberdin_Snake
         public Direction direction;
         public Head head;
         public Body body;
-        public Snake()
-        {
-            head = new Head(11, 11);
-            body = new Body();
-            body.AddElement(head.X, head.Y + 1);
-            body.AddElement(head.X, head.Y + 2);
-
-        }
+        private Display _display;
+        public int Speed { get; set; }
         public void Move()
         {
             for (int i = body.tail.Count() - 1; i >= 0; i--)
             {
+                if (i == body.tail.Count - 1)
+                    _display.Refresh(new ElementGame(body.tail[i].X, body.tail[i].Y, ' '));
                 if (i == 0)
                 {
                     body.tail[i].X = head.X;
                     body.tail[i].Y = head.Y;
+                    _display.Refresh(body.tail[i]);
                 }
                 else
                 {
                     body.tail[i].X = body.tail[i - 1].X;
                     body.tail[i].Y = body.tail[i - 1].Y;
+                    _display.Refresh(body.tail[i]);
                 }
             }//движение хвоста
             switch (direction)
             {
                 case Direction.up:
-                    head.Y -= 1;//движение хвоста
+                    head.Y -= 1;
                     break;
                 case Direction.left:
                     head.X -= 1;
@@ -48,10 +46,21 @@ namespace Ishberdin_Snake
                 default:
                     break;
             }
+            _display.Refresh(head);
         }
-        
+
+        public Snake(Display display)
+        {
+            _display = display;
+            head = new Head(11, 11);
+            body = new Body();
+            body.AddElement(head.X, head.Y);
+            body.AddElement(head.X, head.Y);
+            Speed = 1;
+        }
+
     }
-    class Head : ElementSnake
+    class Head : ElementGame
     {
         public Head(int X, int Y)
         {
@@ -62,29 +71,30 @@ namespace Ishberdin_Snake
     }
     class Body
     {
-        public List<ElementSnake> tail = new List<ElementSnake>();
+        public List<ElementGame> tail = new List<ElementGame>();
         public void AddElement(int X, int Y)
         {
-            tail.Add(new ElementSnake(X, Y, "#"[0]));
+            tail.Add(new ElementGame(X, Y, "#"[0]));
         }
         public void AddElement()
         {
-            AddElement(tail[tail.Count-1].X, tail[tail.Count-1].Y);
+            AddElement(tail[tail.Count - 1].X, tail[tail.Count - 1].Y);
         }
 
     }
 
-    class ElementSnake
+    class ElementGame
     {
         public int X, Y;
-        public char _char;
-        public ElementSnake(int X, int Y, char _char)
+        protected char _char;
+        public char Char { get { return _char; } }
+        public ElementGame(int X, int Y, char _char)
         {
             this.X = X;
             this.Y = Y;
             this._char = _char;
         }
-        public ElementSnake() { }
+        public ElementGame() { }
     }
 }
 

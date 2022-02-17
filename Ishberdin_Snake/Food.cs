@@ -1,17 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Ishberdin_Snake
 {
-    class Food:ElementSnake
+    class Food : ElementGame
     {
-        private Random random = new Random();
-        public void Create(Display display)
+        private Random _random = new Random();
+        private Display _display;
+        private Snake _snake;
+
+        public void Create()
         {
-            X = random.Next(1, display.Widths-2);
-            Y = random.Next(1, display.High-2);
+            X = _random.Next(1, _display.Settings.Widths - 2);
+            Y = _random.Next(1, _display.Settings.High - 2);
+            if (CheckCollisionSnake()) Create();
+            else _display.Refresh(this);
+        }
+
+        public Food(Display display, Snake snake)
+        {
             _char = '$';
+            _display = display;
+            _snake = snake;
+        }
+        private bool CheckCollisionSnake()
+        {
+            foreach (ElementGame item in _snake.body.tail)
+            {
+                if (X == item.X & Y == item.Y)
+                {
+                    return true;
+                }
+            }
+            if (X == _snake.head.X & Y == _snake.head.Y)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
